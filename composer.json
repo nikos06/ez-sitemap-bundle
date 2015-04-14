@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Blend\\EzSitemapBundle": "src/EzSitemapBundle",
+            "Blend\\EzSitemapBundle\\": "src/EzSitemapBundle",
         }
     }
 }
