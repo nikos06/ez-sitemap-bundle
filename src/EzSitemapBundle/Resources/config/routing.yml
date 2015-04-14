@@ -1,0 +1,3 @@
+blend_sitemap_main:
+    pattern:  /sitemap.xml
+    defaults: { _controller: BlendEzSitemapBundle:Default:index }

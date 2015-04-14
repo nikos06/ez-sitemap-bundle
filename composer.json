@@ -1,0 +1,21 @@
+{
+    "name": "blendinteractive/ez-sitemap-bundle",
+    "description": "Sitemap Generation bundle for eZ Publish 5.0+",
+    "license": "LGPL 3.0",
+    "authors": [
+        {
+            "name": "Jackson Murtha",
+            "email": "jackson@blendinteractive.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.4",
+        "ezsystems/ezpublish-kernel": "@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Blend\\EzSitemapBundle": "src/EzSitemapBundle",
+        }
+    }
+}

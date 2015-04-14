@@ -1,0 +1,18 @@
+parameters:
+  blend_sitemap.content_types:
+    - folder
+    - article
+    - text_page
+    - landing_page
+       
+  blend_sitemap.main_uri: http://example.org
+
+services:
+  blend_sitemap.content:
+    class: Blend\EzSitemapBundle\Services\ContentLoader
+    arguments:
+      - @ezpublish.api.service.location
+      - @ezpublish.api.service.search
+    calls:
+      - [ setContainer, [@service_container] ]
+
