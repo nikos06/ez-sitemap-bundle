@@ -14,8 +14,8 @@ class UpdateCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('blend:sitemap:update')
-            ->setDescription('Update Sitemap.xml');
+            ->setName('blend:sitemap:generate')
+            ->setDescription('generate/update Sitemap.xml');
     }
 
     /**
@@ -37,7 +37,6 @@ class UpdateCommand extends ContainerAwareCommand
 
         $query = new Query();
 
-        $contentType = $contentTypeService->loadContentTypeByIdentifier( 'tweet' );
 
         $contentLoaderService = $this->getContainer()->get( 'blend_sitemap.content' );
     }
