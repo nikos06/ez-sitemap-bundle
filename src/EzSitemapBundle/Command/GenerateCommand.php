@@ -2,14 +2,10 @@
 namespace Blend\EzSitemapBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use eZ\Publish\API\Repository\Values\Content\Query;
-use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 
-class UpdateCommand extends ContainerAwareCommand
+class GenerateCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
@@ -26,18 +22,42 @@ class UpdateCommand extends ContainerAwareCommand
      */
     protected function execute( InputInterface $input, OutputInterface $output )
     {
-        $repository = $this->getContainer()->get( 'ezpublish.api.repository' );
-        $userService = $repository->getUserService();
-        $administratorUser = $userService->loadUser( 14 );
-        $repository->setCurrentUser( $administratorUser );
-        $contentService = $repository->getContentService();
-        $locationService = $repository->getLocationService();
-        $contentTypeService = $repository->getContentTypeService();
-        $searchService = $repository->getSearchService();
+        $container = $this->getContainer();
+        $contentLoaderService = $container->get( 'blend_sitemap.content' );
+        $locations = $contentLoaderService->loadLocations();
 
-        $query = new Query();
+        $sitemap = new \DOMDocument('1.0', 'utf-8');
+        $sitemap->preserveWhiteSpace = false;
+        $sitemap->formatOutput = true;
+        $urlSet = $sitemap->createElement('urlset');
+        $sitemap->appendChild($urlSet);
 
+        // add url blocks to sitemap xml
+        //  <url>
+        //    <loc>/</loc>
+        //    <lastmod>2015-06-15</lastmod>
+        //  </url>
+        foreach( $locations as $location )
+        {
+            // create url block
+            $urlBlock = $sitemap->createElement('url');
+            $urlSet->appendChild($urlBlock);
 
-        $contentLoaderService = $this->getContainer()->get( 'blend_sitemap.content' );
+            // create loc tag
+            $loc  = $sitemap->createElement('loc');
+            $urlBlock->appendChild($loc);
+            $url = $container->get('router')->generate( $location );
+            $locText = $sitemap->createTextNode($url);
+            $loc->appendChild($locText);
+
+            // create lastmod tag
+            $lastmod = $sitemap->createElement('lastmod');
+            $urlBlock->appendChild($lastmod);
+            $lastmodText = $sitemap->createTextNode( $location->contentInfo->modificationDate->format('Y-m-d') );
+            $lastmod->appendChild($lastmodText);
+        }
+        $fp = fopen('web/sitemap.xml', 'w');
+        fwrite($fp, $sitemap->saveXml());
+        fclose($fp);
     }
 }
