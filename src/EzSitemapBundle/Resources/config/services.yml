@@ -4,7 +4,7 @@ parameters:
     - article
     - text_page
     - landing_page
-       
+  blend_sitemap.allowed_sections: [ standard ]
   blend_sitemap.main_uri: http://example.org
 
 services:
@@ -13,6 +13,6 @@ services:
     arguments:
       - @ezpublish.api.service.location
       - @ezpublish.api.service.search
+      - @ezpublish.api.service.section
     calls:
       - [ setContainer, [@service_container] ]
-
