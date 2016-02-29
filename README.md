@@ -25,3 +25,12 @@ blend_ez_sitemap:
 allowed_sections is a list of either ezpublish section Ids or section names.  To not limit by section, use a an empty array, e.g. `[]`
 allowed_content_types is a list of content_type_identifiers.  Set to `[]` to not limit content types.
 main_url is the protocol + domain for the base domain for the sitemap.
+
+If you encounter an error about user not having access to 'view' 'section', your user (probably anonymous) does not have permission to get a list of sessions.  You can either grant this permission, or use the section IDs instead of names in the allowed_sections.
+
+==Running the command==
+To run the command from your console:
+`php ezpublish/console blend:ez-sitemap:generate`
+
+This will add the sitemap file to the default location, 'web/sitemap.xml'
+
