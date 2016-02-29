@@ -10,7 +10,7 @@ class GenerateCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('blend:sitemap:generate')
+            ->setName('blend:ez-sitemap:generate')
             ->setDescription('generate/update Sitemap.xml');
     }
 
@@ -20,7 +20,7 @@ class GenerateCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      * @return int|null|void
      */
-    protected function execute( InputInterface $input, OutputInterface $output )
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
         $contentLoaderService = $container->get('blend_ez_sitemap.content');
