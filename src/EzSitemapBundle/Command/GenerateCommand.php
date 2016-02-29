@@ -23,7 +23,7 @@ class GenerateCommand extends ContainerAwareCommand
     protected function execute( InputInterface $input, OutputInterface $output )
     {
         $container = $this->getContainer();
-        $contentLoaderService = $container->get( 'blend_sitemap.content' );
+        $contentLoaderService = $container->get('blend_ez_sitemap.content');
         $locations = $contentLoaderService->loadLocations();
 
         $sitemap = new \DOMDocument('1.0', 'utf-8');

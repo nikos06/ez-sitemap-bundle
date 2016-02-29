@@ -18,11 +18,20 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('blend_sitemap');
+        $rootNode = $treeBuilder->root('blend_ez_sitemap');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode
+            ->children()
+                ->arrayNode('allowed_content_types')
+                    ->prototype('scalar')->end()
+                ->end()
+                ->arrayNode('allowed_sections')
+                    ->prototype('scalar')->end()
+                ->end()
+                ->scalarNode('main_url')->end()
+            ->end()
+        ->end()
+        ;
 
         return $treeBuilder;
     }

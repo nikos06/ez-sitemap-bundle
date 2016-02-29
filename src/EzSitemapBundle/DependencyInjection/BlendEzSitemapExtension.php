@@ -4,6 +4,7 @@ namespace Blend\EzSitemapBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -24,5 +25,9 @@ class BlendEzSitemapExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+
+        $container->setParameter('blend_ez_sitemap.allowed_content_types', $config['allowed_content_types']);
+        $container->setParameter('blend_ez_sitemap.allowed_sections', $config['allowed_sections']);
+        $container->setParameter('blend_ez_sitemap.main_url', $config['main_url']);
     }
 }

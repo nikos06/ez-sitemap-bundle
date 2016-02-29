@@ -25,14 +25,14 @@ class DefaultController extends Controller {
         $response->headers->set( 'X-Location-Id', 2 );
         $response->headers->set( 'Content-Type', 'application/xml' );
 
-        $rootUrl =  $this->container->getParameter( 'blend_sitemap.main_uri' );
+        $rootUrl =  $this->container->getParameter('blend_ez_sitemap.main_uri');
 
-        $contentLoaderService = $this->container->get( 'blend_sitemap.content' );
+        $contentLoaderService = $this->container->get('blend_ez_sitemap.content');
 
         $locations = $contentLoaderService->loadLocations();
 
         return $this->render(
-            'BlendEzSitemapBundle:Default:index.xml.twig', 
+            'BlendEzSitemapBundle:Default:index.xml.twig',
             [ 'results' => $locations, 'rootUrl' => $rootUrl ],
             $response
         );

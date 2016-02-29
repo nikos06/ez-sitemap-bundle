@@ -9,13 +9,14 @@ use eZ\Publish\API\Repository\Values\Content\Query\SortClause;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use eZ\Publish\API\Repository\SectionService;
 
+
 class ContentLoader extends ContainerAware
 {
     private $searchService = null;
     private $locationService = null;
     private $sectionService;
 
-    public function __construct( $locationService, $searchService, SectionService $sectionService )
+    public function __construct($locationService, $searchService, SectionService $sectionService)
     {
         $this->searchService = $searchService;
         $this->locationService = $locationService;
@@ -27,33 +28,66 @@ class ContentLoader extends ContainerAware
      */
     public function loadLocations()
     {
-        $contentTypes = $this->container->getParameter( 'blend_sitemap.content_types' );
-        $allowedSections = $this->container->getParameter( 'blend_sitemap.allowed_sections' );
-        $allowedSectionIds = array();
-        foreach ( $allowedSections as $sectionIdentifier )
-        {
-            $allowedSectionIds[] = $this->sectionService->loadSectionByIdentifier( $sectionIdentifier )->id;
+        $query = new Query();
+        $queryCriteria = [
+            new Criterion\Visibility(Criterion\Visibility::VISIBLE),
+        ];
+
+        $contentTypeCriterion = $this->generateContentTypeCriterion(
+            $this->container->getParameter('blend_ez_sitemap.allowed_content_types')
+        );
+        if ($contentTypeCriterion !== null) {
+            $queryCriteria[] = $contentTypeCriterion;
         }
 
-        $query = new Query();
+        $sectionCriterion = $this->generateSectionCriterion(
+            $this->container->getParameter('blend_ez_sitemap.allowed_sections')
+        );
+        if ($sectionCriterion !== null) {
+            $queryCriteria[] = $sectionCriterion;
+        }
 
-        $query->criterion = new LogicalAnd( [
-            new Criterion\ContentTypeIdentifier( $contentTypes ),
-            new Criterion\Visibility( Criterion\Visibility::VISIBLE ),
-            new Criterion\SectionId( $allowedSectionIds )
-        ] );
+        $query->query = new LogicalAnd($queryCriteria);
 
-        $query->sortClauses = [ new SortClause\LocationPathString( Query::SORT_ASC ) ];
-        $list = $this->searchService->findContent( $query );
+        $query->sortClauses = [
+//            new SortClause\LocationPathString(Query::SORT_ASC)
+        ];
+        $list = $this->searchService->findContent($query);
 
         $results = [];
-        foreach( $list->searchHits as $content )
-        {
+        foreach ($list->searchHits as $content) {
             $locationId = $content->valueObject->versionInfo->contentInfo->mainLocationId;
 
-            $results[] = $this->locationService->loadLocation( $locationId );
+            $results[] = $this->locationService->loadLocation($locationId);
         }
 
         return $results;
+    }
+
+    private function generateContentTypeCriterion(array $contentTypes = null)
+    {
+        if ($contentTypes && !empty($contentTypes)) {
+            return new Criterion\ContentTypeIdentifier($contentTypes);
+        }
+        return null;
+    }
+
+    private function generateSectionCriterion(array $sectionIdentifiers = null)
+    {
+        // if no sections are allowed, allow all
+        if ($sectionIdentifiers && !empty($sectionIdentifiers)) {
+            $allowedSections = $sectionIdentifiers;
+            $allowedSectionIds = [];
+
+            foreach ($allowedSections as $sectionIdentifier) {
+                if (!is_numeric($sectionIdentifier)) {
+                    $allowedSectionIds[] = $this->sectionService->loadSectionByIdentifier($sectionIdentifier)->id;
+                } else {
+                    $allowedSectionIds[] = $sectionIdentifier;
+                }
+            }
+            return new Criterion\SectionId($allowedSectionIds);
+        }
+        return null;
     }
 }

@@ -1,18 +1,11 @@
 parameters:
-  blend_sitemap.content_types:
-    - folder
-    - article
-    - text_page
-    - landing_page
-  blend_sitemap.allowed_sections: [ standard ]
-  blend_sitemap.main_uri: http://example.org
 
 services:
-  blend_sitemap.content:
+  blend_ez_sitemap.content:
     class: Blend\EzSitemapBundle\Services\ContentLoader
     arguments:
       - @ezpublish.api.service.location
       - @ezpublish.api.service.search
       - @ezpublish.api.service.section
     calls:
-      - [ setContainer, [@service_container] ]
+      - [setContainer, [@service_container]]
