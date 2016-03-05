@@ -8,6 +8,7 @@ use eZ\Publish\API\Repository\Values\Content\Query\Criterion\LogicalAnd;
 use eZ\Publish\API\Repository\Values\Content\Query\SortClause;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use eZ\Publish\API\Repository\SectionService;
+use eZ\Publish\API\Repository\Values\Content\LocationQuery;
 
 
 class ContentLoader extends ContainerAware
@@ -28,7 +29,7 @@ class ContentLoader extends ContainerAware
      */
     public function loadLocations()
     {
-        $query = new Query();
+        $query = new LocationQuery();
         $queryCriteria = [
             new Criterion\Visibility(Criterion\Visibility::VISIBLE),
         ];
@@ -52,12 +53,11 @@ class ContentLoader extends ContainerAware
         $query->sortClauses = [
 //            new SortClause\LocationPathString(Query::SORT_ASC)
         ];
-        $list = $this->searchService->findContent($query);
+        $list = $this->searchService->findLocations($query);
 
         $results = [];
-        foreach ($list->searchHits as $content) {
-            $locationId = $content->valueObject->versionInfo->contentInfo->mainLocationId;
-
+        foreach ($list->searchHits as $location) {
+            $locationId = $location->valueObject->id;
             $results[] = $this->locationService->loadLocation($locationId);
         }
 
