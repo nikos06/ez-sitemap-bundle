@@ -52,6 +52,8 @@ class ContentLoader extends ContainerAware
         $query->sortClauses = [
 //            new SortClause\LocationPathString(Query::SORT_ASC)
         ];
+        
+        $query->limit = 50000;
         $list = $this->searchService->findLocations($query);
 
         $results = [];
