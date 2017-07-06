@@ -25,7 +25,7 @@ class DefaultController extends Controller {
         $response->headers->set( 'X-Location-Id', 2 );
         $response->headers->set( 'Content-Type', 'application/xml' );
 
-        $rootUrl =  $this->container->getParameter('blend_ez_sitemap.main_uri');
+        $rootUrl =  $this->container->getParameter('blend_ez_sitemap.main_url');
 
         $contentLoaderService = $this->container->get('blend_ez_sitemap.content');
 
