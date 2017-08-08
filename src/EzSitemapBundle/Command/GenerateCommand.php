@@ -31,6 +31,8 @@ class GenerateCommand extends ContainerAwareCommand
         $sitemap->formatOutput = true;
         $urlSet = $sitemap->createElement('urlset');
         $sitemap->appendChild($urlSet);
+        
+        $hostname = $container->getParameter('blend_ez_sitemap.main_url');
 
         // add url blocks to sitemap xml
         //  <url>
@@ -46,7 +48,7 @@ class GenerateCommand extends ContainerAwareCommand
             // create loc tag
             $loc  = $sitemap->createElement('loc');
             $urlBlock->appendChild($loc);
-            $url = $container->get('router')->generate( $location );
+            $url = "{$hostname}{$container->get('router')->generate( $location )}";
             $locText = $sitemap->createTextNode($url);
             $loc->appendChild($locText);
 
